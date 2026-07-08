@@ -1,4 +1,4 @@
-# ?? FogCloudEdge
+#  FogCloudEdge
 
 <p align="center">
 
@@ -12,7 +12,7 @@
 
 ---
 
-## ? Sobre o Projeto
+## Sobre o Projeto
 
 Este projeto foi desenvolvido como parte das atividades da **Universidade do Vale do Rio dos Sinos (UNISINOS)**, com o objetivo de implementar uma arquitetura baseada em **Cloud Computing**, **Fog Computing** e **Edge Computing**.
 
@@ -22,7 +22,7 @@ A proposta demonstra como os dados podem ser processados em diferentes camadas d
 
 ---
 
-# ? Tecnologias Utilizadas
+#  Tecnologias Utilizadas
 
 | Tecnologia | Descrição |
 |------------|-----------|
@@ -38,7 +38,7 @@ A proposta demonstra como os dados podem ser processados em diferentes camadas d
 
 ---
 
-# ? Fluxo de Funcionamento
+#  Fluxo de Funcionamento
 
 ```mermaid
 sequenceDiagram
@@ -59,8 +59,7 @@ Fog-->>Edge: Resultado
 
 ---
 
-
-# ? Execução
+#  Execução
 
 
 Utilizando Docker
