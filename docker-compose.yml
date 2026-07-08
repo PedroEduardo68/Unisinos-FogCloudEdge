@@ -1,0 +1,177 @@
+
+services:
+
+  # DataBase
+  postgres:
+    image: postgres:15
+    environment:
+      - TZ=America/Sao_Paulo
+      - POSTGRES_USER=${POSTGRES_USER_DC}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_DC}
+      - POSTGRES_DB=${POSTGRES_DB_DC}
+    volumes:
+      - /smartmeter/postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+
+
+  #MQtt
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./docker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - /smartmeter/mosquitto/data:/mosquitto/data
+      - /smartmeter/mosquitto/log:/mosquitto/log
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    restart: always
+
+
+
+
+
+
+  frontend1:
+    environment:
+      - TZ=America/Sao_Paulo
+    build:
+      context: ./frontend/smartweb/
+      dockerfile: Dockerfile-prod
+    ports:
+      - "81:80"
+    restart: always
+
+  frontend2:
+    environment:
+      - TZ=America/Sao_Paulo
+    build:
+      context: ./frontend/smartweb/
+      dockerfile: Dockerfile-prod
+    ports:
+      - "82:80"
+    restart: always
+
+  frontend3:
+    environment:
+      - TZ=America/Sao_Paulo
+    build:
+      context: ./frontend/smartweb/
+      dockerfile: Dockerfile-prod
+    ports:
+      - "83:80"
+    restart: always
+
+  frontend4:
+    environment:
+      - TZ=America/Sao_Paulo
+    build:
+      context: ./frontend/smartweb/
+      dockerfile: Dockerfile-prod
+    ports:
+      - "84:80"
+    restart: always
+
+
+
+
+
+
+
+  backend1:
+    environment:
+      - TZ=America/Sao_Paulo
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile-prod
+    depends_on:
+      - postgres
+      - mosquitto
+    ports:
+      - "5001:5000"
+    restart: always
+    volumes:
+      - /smartmeter/logCSM:/backend/log
+      - /smartmeter/File:/backend/File
+
+
+
+  backend2:
+    environment:
+      - TZ=America/Sao_Paulo
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile-prod
+    depends_on:
+      - postgres
+      - mosquitto
+    ports:
+      - "5002:5000"
+    restart: always
+    volumes:
+      - /smartmeter/logCSM2:/backend/log
+      - /smartmeter/File2:/backend/File
+
+
+
+
+
+    
+  backend_input:
+    environment:
+      - TZ=America/Sao_Paulo
+    build:
+      context: ./backend_input/
+      dockerfile: Dockerfile-prod
+    depends_on:
+      - postgres
+      - mosquitto
+    ports:
+      - "4001:4000"
+    restart: always
+    volumes:
+      - /smartmeter/logCSM_Input1:/backend/log
+      - /smartmeter/logCSM_Input1:/backend/File
+
+
+
+
+
+
+
+
+  nginxfrontend:
+    environment:
+      - TZ=America/Sao_Paulo
+    build: ./loadbalance/frontend/
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend1
+      - frontend2
+      - frontend3
+      - frontend4
+    restart: always
+
+
+  nginxbackend:
+    environment:
+      - TZ=America/Sao_Paulo
+    build: ./loadbalance/backend/
+    ports:
+      - "5000:5000"
+      - "4000:4000"
+    depends_on:
+      - backend1
+      - backend2
+    restart: always
+
+
+
+
+
+

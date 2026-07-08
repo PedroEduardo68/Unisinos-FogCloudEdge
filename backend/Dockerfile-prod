@@ -1,0 +1,6 @@
+
+FROM pedroeduardo68/backoraclephpnode14:1
+WORKDIR /backend
+COPY . .
+RUN npm install package.json
+ENTRYPOINT  ["npm", "start","--trace-warnings"]           
