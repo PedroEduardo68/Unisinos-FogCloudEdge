@@ -1,4 +1,4 @@
-#  FogCloudEdge
+# FogCloudEdge
 
 <p align="center">
 
@@ -12,33 +12,31 @@
 
 ---
 
-## Sobre o Projeto
+## About the Project
 
-Este projeto foi desenvolvido como parte das atividades da **Universidade do Vale do Rio dos Sinos (UNISINOS)**, com o objetivo de implementar uma arquitetura baseada em **Cloud Computing**, **Fog Computing** e **Edge Computing**.
+This project was developed as part of activities at the **Universidade do Vale do Rio dos Sinos (UNISINOS)**. Its goal is to demonstrate an architecture based on **Cloud Computing**, **Fog Computing** and **Edge Computing**.
 
-A proposta demonstra como os dados podem ser processados em diferentes camadas da infraestrutura, reduzindo latência, melhorando desempenho e distribuindo a carga computacional.
-
+The proposal shows how data can be processed across different layers of the infrastructure, reducing latency, improving performance and distributing computational load.
 
 
 ---
 
-#  Tecnologias Utilizadas
+# Technologies Used
 
-| Tecnologia | Descrição |
-|------------|-----------|
+| Technology | Description |
+|------------|-------------|
 | Docker | Containers |
-| MQTT | Comunicação IoT |
-| PostgresqL | Banco de Dados |
-| Linux | Ambiente de execução |
-| Git | Versionamento |
-| GitHub | Hospedagem |
+| MQTT | IoT communication |
+| PostgreSQL | Database |
+| Linux | Runtime environment |
+| Git | Version control |
+| GitHub | Hosting |
 
 ---
 
-
 ---
 
-#  Fluxo de Funcionamento
+# Operation Flow
 
 ```mermaid
 sequenceDiagram
@@ -48,21 +46,20 @@ participant Fog
 participant Cloud
 participant Database
 
-Edge->>Fog: Envia dados
-Fog->>Fog: Processamento Local
-Fog->>Cloud: Dados filtrados
-Cloud->>Database: Armazenamento
-Database-->>Cloud: Resultado
-Cloud-->>Fog: Resposta
-Fog-->>Edge: Resultado
+Edge->>Fog: Sends data
+Fog->>Fog: Local processing
+Fog->>Cloud: Filtered data
+Cloud->>Database: Storage
+Database-->>Cloud: Result
+Cloud-->>Fog: Response
+Fog-->>Edge: Result
 ```
 
 ---
 
-#  Execução
+# Running
 
-
-Utilizando Docker
+Using Docker:
 
 ```bash
 docker compose up
@@ -70,22 +67,22 @@ docker compose up
 
 ---
 
+# Documentation of Dockerfiles and XML files
 
+> Status: No XML files were found in the repository. The Dockerfiles identified are documented below.
 
+---
 
-# Documentação de Dockerfiles e arquivos XML
+**Backend (production)**: [backend/Dockerfile-prod](backend/Dockerfile-prod#L1-L200)
 
-
-**Backend (produção)**: [backend/Dockerfile-prod](backend/Dockerfile-prod#L1-L200)
-
-- **Propósito**: Imagem de produção para o backend Node.js/Oracle/PHP.
-- **Imagem base**: `pedroeduardo68/backoraclephpnode14:1`
-- **Pontos-chave**:
-  - Define `WORKDIR /backend` e copia todo o contexto.
-  - Executa `RUN npm install package.json` (nota: comando incomum — normalmente `npm install` é usado).
-  - `ENTRYPOINT ["npm", "start","--trace-warnings"]` inicia a aplicação.
-- **Portas**: não expõe portas diretamente no Dockerfile.
-- **Como buildar**:
+- **Purpose**: Production image for the backend (Node.js / Oracle / PHP).
+- **Base image**: `pedroeduardo68/backoraclephpnode14:1`
+- **Key points**:
+  - Sets `WORKDIR /backend` and copies the build context.
+  - Runs `RUN npm install package.json` (note: unusual — typically `npm install` is used).
+  - `ENTRYPOINT ["npm", "start","--trace-warnings"]` starts the application.
+- **Ports**: none declared in the Dockerfile.
+- **How to build**:
 
   ```bash
   docker build -f backend/Dockerfile-prod -t backend-prod:latest .
@@ -93,15 +90,15 @@ docker compose up
 
 ---
 
-**Frontend (produção)**: [Frontend/Dockerfile-prod](Frontend/Dockerfile-prod#L1-L200)
+**Frontend (production)**: [Frontend/Dockerfile-prod](Frontend/Dockerfile-prod#L1-L200)
 
-- **Propósito**: Servir a aplicação SPA via Nginx otimizado para SPAs.
-- **Imagem base**: `steebchen/nginx-spa:stable`
-- **Pontos-chave**:
-  - Copia o diretório `./build/` para `/app` dentro da imagem.
-  - Expõe `80` e executa `nginx` como comando padrão.
-- **Portas**: `80`.
-- **Como buildar**:
+- **Purpose**: Serve the SPA using an Nginx image optimized for single-page apps.
+- **Base image**: `steebchen/nginx-spa:stable`
+- **Key points**:
+  - Copies `./build/` to `/app` inside the image.
+  - Exposes port `80` and runs `nginx` by default.
+- **Ports**: `80`.
+- **How to build**:
 
   ```bash
   docker build -f Frontend/Dockerfile-prod -t frontend-prod:latest .
@@ -109,19 +106,18 @@ docker compose up
 
 ---
 
-**Imagem de infraestrutura - backend**: [docker/back-image/Dockerfile](docker/back-image/Dockerfile#L1-L200)
+**Infrastructure image - backend**: [docker/back-image/Dockerfile](docker/back-image/Dockerfile#L1-L200)
 
-- **Propósito**: Imagem base de infraestrutura contendo Node.js v14 e cliente Oracle, usada para construir/rodar componentes do backend.
-- **Imagem base**: `debian:bullseye`
-- **Pontos-chave**:
-  - Instala dependências via `apt-get` (libaio, build-essential, curl, wget, etc.).
-  - Instala Node.js v14.18.1 a partir do tarball (cópia manual em /usr/local).
-  - Verifica `node -v` e `npm -v`.
-  - Instala cliente Oracle via `dpkg -i oracle-instantclient-basic_21.7.0.0.0-2_amd64.deb` (o .deb precisa estar no contexto de build).
-  - Instala `php7.4` e `php7.4-pgsql`.
-- **Observações / pontos de atenção**:
-  - O Dockerfile assume que o pacote `.deb` do Instant Client já está presente no contexto de build.
-- **Como buildar**:
+- **Purpose**: Base infrastructure image containing Node.js v14 and Oracle client, used to build/run backend components.
+- **Base image**: `debian:bullseye`
+- **Key points**:
+  - Installs dependencies via `apt-get` (libaio, build-essential, curl, wget, etc.).
+  - Installs Node.js v14.18.1 from the tarball into `/usr/local`.
+  - Verifies `node -v` and `npm -v`.
+  - Installs Oracle Instant Client via `dpkg -i oracle-instantclient-basic_21.7.0.0.0-2_amd64.deb` (the .deb must be present in the build context).
+  - Installs `php7.4` and `php7.4-pgsql`.
+
+- **How to build**:
 
   ```bash
   docker build -f docker/back-image/Dockerfile -t back-infra:latest docker/back-image
@@ -129,16 +125,17 @@ docker compose up
 
 ---
 
-**Imagem de infraestrutura - frontend**: [docker/Front-Image/Dockerfile](docker/Front-Image/Dockerfile#L1-L200)
+**Infrastructure image - frontend**: [docker/Front-Image/Dockerfile](docker/Front-Image/Dockerfile#L1-L200)
 
-- **Propósito**: Imagem base para o frontend com Node.js v14 instalada manualmente.
-- **Imagem base**: `debian:bullseye`
-- **Pontos-chave**:
-  - Instala ferramentas básicas (`curl`, `vim`, `ca-certificates`, `gnupg`, `xz-utils`).
-  - Baixa e instala Node.js v14.18.1 a partir do tarball.
-  - Verifica `node -v` e `npm -v`.
-  - Comentário com exemplo de build: `docker build -t pedroeduardo68/frontendnode14:1 .` 
-- **Como buildar**:
+- **Purpose**: Base image for the frontend with Node.js v14 installed manually.
+- **Base image**: `debian:bullseye`
+- **Key points**:
+  - Installs basic tools (`curl`, `vim`, `ca-certificates`, `gnupg`, `xz-utils`).
+  - Downloads and installs Node.js v14.18.1 from the tarball.
+  - Verifies `node -v` and `npm -v`.
+  - Contains a commented example build command: `docker build -t pedroeduardo68/frontendnode14:1 .`
+ a
+- **How to build**:
 
   ```bash
   docker build -f docker/Front-Image/Dockerfile -t front-infra:latest docker/Front-Image
@@ -146,69 +143,54 @@ docker compose up
 
 ---
 
-## Ações recomendadas
+## Recommended actions
 
-- Verificar e padronizar o passo de instalação do Node.js (usar NodeSource ou `nvm` se apropriado).
-- Remover ou ajustar o `RUN npm install package.json` no `backend/Dockerfile-prod` para `npm ci` ou `npm install` conforme o caso.
-- Adicionar limpeza de cache do `apt` para reduzir tamanho das imagens.
-- Incluir `EXPOSE` nos Dockerfiles que expõem portas de serviço para clareza.
+- Standardize Node.js installation (use NodeSource or `nvm` if appropriate).
+- Fix `RUN npm install package.json` in `backend/Dockerfile-prod` to use `npm ci` or `npm install` as appropriate.
+- Add apt cache cleanup to reduce image size.
+- Add `EXPOSE` to Dockerfiles that serve networked services for clarity.
 
-
-
+---
 
 ## Docker Compose
 
-Arquivo principal: [docker-compose.yml](docker-compose.yml#L1-L400)
+Main file: [docker-compose.yml](docker-compose.yml#L1-L400)
 
-- **Propósito**: Orquestrar serviços do sistema (banco de dados, broker MQTT, múltiplos frontends e backends, load balancers).
-- **Serviços principais**:
-  - **postgres**: `postgres:15` — variáveis de ambiente para usuário, senha e DB; volume host `/smartmeter/postgres-data` mapeado para persistência; porta `5432` exposta.
-  - **mosquitto**: `eclipse-mosquitto:2.0` — configurações e volumes para dados e logs; portas `1883` (MQTT) e `9001` (Websocket) expostas. Usa `./docker/mosquitto/mosquitto.conf` como arquivo de configuração.
-  - **frontend1..frontend4**: constrói a partir de `./frontend/smartweb/` usando `Dockerfile-prod`; cada instância mapeia portas `81..84` para `80` internamente (balanceadas por `nginxfrontend`).
-  - **backend1, backend2**: constrói a partir de `./backend/` usando `Dockerfile-prod`; expõem `5001` e `5002` para `5000` interno; dependem de `postgres` e `mosquitto`; usam volumes de logs e arquivos em `/smartmeter/...`.
-  - **backend_input**: serviço adicional do backend, mapeia `4001:4000`.
-  - **nginxfrontend**: build em `./loadbalance/frontend/`, expõe `80` e `443`, depende dos quatro frontends.
-  - **nginxbackend**: build em `./loadbalance/backend/`, expõe `5000` e `4000`, depende dos backends.
+- **Purpose**: Orchestrate system services (database, MQTT broker, multiple frontends/backends, load balancers).
+- **Main services**:
+  - **postgres**: `postgres:15` — environment variables for user/password/DB; host volume `/smartmeter/postgres-data` for persistence; port `5432` mapped.
+  - **mosquitto**: `eclipse-mosquitto:2.0` — configuration and volumes for data and logs; ports `1883` (MQTT) and `9001` (WebSocket) mapped. Uses `./docker/mosquitto/mosquitto.conf`.
+  - **frontend1..frontend4**: built from `./frontend/smartweb/` using `Dockerfile-prod`; each instance maps host ports `81..84` to internal port `80` (these are balanced by `nginxfrontend`).
+  - **backend1, backend2**: built from `./backend/` using `Dockerfile-prod`; expose `5001` and `5002` on the host mapped to internal `5000`; depend on `postgres` and `mosquitto`; use host volumes for logs and files under `/smartmeter/...`.
+  - **backend_input**: additional backend service mapping `4001:4000`.
+  - **nginxfrontend**: built from `./loadbalance/frontend/`, exposes `80` and `443`, depends on the four frontends.
+  - **nginxbackend**: built from `./loadbalance/backend/`, exposes `5000` and `4000`, depends on the backend services.
 
 - **Volumes / Bind mounts**:
-  - O compose usa vários bind mounts para `/smartmeter/...` (dados, logs, uploads). Esses caminhos são host-specific e exigem diretórios pré-existentes no host.
+  - The compose file uses several host bind mounts under `/smartmeter/...` for data, logs and uploads. These are host-specific and require directories to exist with appropriate permissions.
 
-- **Variáveis sensíveis**:
-  - As credenciais do Postgres são injetadas via variáveis de ambiente (`POSTGRES_USER_DC`, `POSTGRES_PASSWORD_DC`, `POSTGRES_DB_DC`). Recomenda-se usar um arquivo `.env` (não comitado) ou secrets para armazenamento seguro.
+- **Sensitive variables**:
+  - Postgres credentials are injected via environment variables (`POSTGRES_USER_DC`, `POSTGRES_PASSWORD_DC`, `POSTGRES_DB_DC`). It is recommended to use a `.env` file (not committed) or Docker secrets to store sensitive values securely.
 
-- **Como subir a stack (exemplo)**:
+- **How to bring the stack up (example)**:
 
 ```bash
 docker compose up -d --build
-# logs: docker compose logs -f
-# parar: docker compose down
+# view logs: docker compose logs -f
+# stop: docker compose down
 ```
- 
 
+- **Improvement suggestions**:
+  - Convert sensitive host bind mounts to named `volumes:` where possible for better portability.
+  - Document required environment variables in a `.env.example` and recommend using Docker secrets for production.
+  - Add `healthcheck` entries for critical services (Postgres, backend) and consider `depends_on` with health conditions, or use external orchestration for startup ordering.
+  - Document the required host directories (`/smartmeter/...`) and necessary permissions.
+  - Consider versioned images for load balancers and document the configuration located in `./loadbalance/`.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+---
 
 <p align="center">
 
-Desenvolvido com Pedro Camera  na UNISINOS
+Developed by Pedro Camera at UNISINOS
 
 </p>
-
-
-
-
-
