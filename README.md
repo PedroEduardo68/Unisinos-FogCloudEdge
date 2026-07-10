@@ -50,9 +50,7 @@ Edge->>Fog: Sends data
 Fog->>Fog: Local processing
 Fog->>Cloud: Filtered data
 Cloud->>Database: Storage
-Database-->>Cloud: Result
-Cloud-->>Fog: Response
-Fog-->>Edge: Result
+
 ```
 
 ---
